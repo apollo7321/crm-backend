@@ -9,8 +9,8 @@ class CustomerDTOTest {
 
     @Test
     void fromCustomer_shouldMapFields() {
-        Customer customer = new Customer("Max", "Mustermann");
-        CustomerDTO dto = new CustomerDTO(customer);
+        var customer = new Customer("Max", "Mustermann");
+        var dto = new CustomerDTO(customer);
         assertEquals("Max", dto.firstName());
         assertEquals("Mustermann", dto.lastName());
     }
