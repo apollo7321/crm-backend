@@ -4,10 +4,11 @@ import de.apollo7321.crm.dto.CreateCustomerDTO;
 import de.apollo7321.crm.dto.CustomerDTO;
 import de.apollo7321.crm.service.CustomerService;
 import jakarta.validation.Valid;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/customer")
@@ -20,8 +21,8 @@ public class CustomerController {
     }
 
     @GetMapping
-    public List<CustomerDTO> getAll() {
-        return customerService.getAll();
+    public Page<CustomerDTO> getAll(Pageable pageable) {
+        return customerService.getAll(pageable);
     }
 
     @PostMapping
