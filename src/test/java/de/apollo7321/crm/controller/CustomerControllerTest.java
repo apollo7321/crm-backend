@@ -16,10 +16,25 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+class CustomerDTOWrapper{
+
+    private List<CustomerDTO> content;
+
+    public void setContent(List<CustomerDTO> content) {
+        this.content = content;
+    }
+
+    public List<CustomerDTO> getContent() {
+        return content;
+    }
+}
 
 @Testcontainers
 @ActiveProfiles("test")
@@ -38,13 +53,17 @@ class CustomerControllerTest {
 
     @Test
     void getAllCustomers() {
-        var getAllUsersResponse = restTemplate.getForEntity(url, CustomerDTO[].class);
+        var params = new HashMap<String, String>();
+        params.put("page", "0");
+        params.put("size", "10");
+        var getAllUsersResponse = restTemplate.getForEntity(url, CustomerDTOWrapper.class);
         assertEquals(HttpStatus.OK, getAllUsersResponse.getStatusCode());
+
         var allUsersBody = getAllUsersResponse.getBody();
         assertNotNull(allUsersBody);
-        long hansWurstInDatabase = Arrays.stream(allUsersBody)
-                .filter(dto -> dto.firstName().equals("Hans") && dto.lastName().equals("Wurst")).count();
-        assertEquals(1, hansWurstInDatabase);
+
+        var isHansWurstInResponse = allUsersBody.getContent().contains(new CustomerDTO("Hans", "Wurst"));
+        assertTrue(isHansWurstInResponse);
     }
 
     @Test
@@ -61,13 +80,14 @@ class CustomerControllerTest {
         assertEquals(lastName, createResponse.getBody().lastName());
 
         // check if the user exists
-        var getAllUsersResponse = restTemplate.getForEntity(url, CustomerDTO[].class);
+        var getAllUsersResponse = restTemplate.getForEntity(url, CustomerDTOWrapper.class);
         assertEquals(HttpStatus.OK, getAllUsersResponse.getStatusCode());
+
         var allUsersBody = getAllUsersResponse.getBody();
         assertNotNull(allUsersBody);
-        long maxMustermannInDatabase = Arrays.stream(allUsersBody)
-                .filter(dto -> dto.firstName().equals(firstName) && dto.lastName().equals(lastName)).count();
-        assertEquals(1, maxMustermannInDatabase);
+
+        var isMaxMustermannInResponse = allUsersBody.getContent().contains(new CustomerDTO("Hans", "Wurst"));
+        assertTrue(isMaxMustermannInResponse);
     }
 
     @ParameterizedTest

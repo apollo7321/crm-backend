@@ -2,9 +2,7 @@ package de.apollo7321.crm.repository;
 
 import de.apollo7321.crm.model.Customer;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CustomerRepository extends PagingAndSortingRepository<Customer, Long> {
-    
-    Customer save(Customer entity);
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
 }
